@@ -19,7 +19,7 @@ export default async function Home() {
       icon: Rabbit,
       title: "Lightning Fast",
       description:
-        "Deal Drop extracts prices in seconds, handling JavaScript and dynamic content",
+        "ZenTrack extracts prices in seconds, handling JavaScript and dynamic content",
     },
     {
       icon: Shield,
@@ -35,14 +35,14 @@ export default async function Home() {
   ];
 
   return (
-    <main className="min-h-screen bg-linear-to-br from-orange-50 via-white to-orange-50">
+    <main className="min-h-screen bg-linear-to-br from-slate-50 via-white to-emerald-50/30">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-3">
             <Image
               src="/logo.png"
-              alt="Deal Drop Logo"
+              alt="ZenTrack Logo"
               width={600}
               height={200}
               className="h-10 w-auto"
@@ -74,8 +74,8 @@ export default async function Home() {
                   key={title}
                   className="bg-white p-6 rounded-xl border border-gray-200"
                 >
-                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4 mx-auto">
-                    <Icon className="w-6 h-6 text-orange-500" />
+                  <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mb-4 mx-auto">
+                    <Icon className="w-6 h-6 text-emerald-600" />
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-2">{title}</h3>
                   <p className="text-sm text-gray-600">{description}</p>

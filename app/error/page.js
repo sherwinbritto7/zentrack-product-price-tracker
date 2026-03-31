@@ -12,7 +12,7 @@ export default function ErrorPage() {
         </p>
         <Link
           href="/"
-          className="inline-block bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition"
+          className="inline-block bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:opacity-90 transition"
         >
           Back to Home
         </Link>

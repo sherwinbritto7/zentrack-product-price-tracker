@@ -55,7 +55,7 @@ export default function AddProductForm({ user }) {
           <Button
             type="submit"
             disabled={loading}
-            className="bg-orange-500 hover:bg-orange-600 h-10 sm:h-12 px-8"
+            className="bg-primary hover:opacity-90 text-primary-foreground h-10 sm:h-12 px-8 shadow-md"
             size="lg"
           >
             {loading ? (
