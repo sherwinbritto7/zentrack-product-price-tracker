@@ -9,6 +9,14 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -23,12 +31,13 @@ import Link from "next/link";
 export default function ProductCard({ product }) {
   const [showChart, setShowChart] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const handleDelete = async () => {
-    if (!confirm("Remove this product from tracking?")) return;
-
     setDeleting(true);
     await deleteProduct(product.id);
+    setIsDeleteDialogOpen(false);
+    setDeleting(false);
   };
 
   return (
@@ -93,7 +102,7 @@ export default function ProductCard({ product }) {
           <Button
             variant="ghost"
             size="sm"
-            onClick={handleDelete}
+            onClick={() => setIsDeleteDialogOpen(true)}
             disabled={deleting}
             className="text-red-600 hover:text-red-700 hover:bg-red-50 gap-1"
           >
@@ -102,6 +111,34 @@ export default function ProductCard({ product }) {
           </Button>
         </div>
       </CardContent>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>De-track Product</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to stop tracking <strong>{product.name}</strong>? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+              disabled={deleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={deleting}
+              className="gap-2"
+            >
+              {deleting ? "Removing..." : "Remove Product"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {showChart && (
         <CardFooter className="pt-0">
