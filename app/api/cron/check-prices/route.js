@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { scrapeProduct } from "@/lib/firecrawl";
-import { sendPriceDropAlert } from "@/lib/email";
+import { sendPriceChangeAlert } from "@/lib/email";
 
 export async function POST(request) {
   try {
@@ -66,23 +66,28 @@ export async function POST(request) {
 
           results.priceChanges++;
 
-          if (newPrice < oldPrice) {
-            const {
-              data: { user },
-            } = await supabase.auth.admin.getUserById(product.user_id);
+          const {
+            data: { user },
+            error: userError
+          } = await supabase.auth.admin.getUserById(product.user_id);
 
-            if (user?.email) {
-              const emailResult = await sendPriceDropAlert(
-                user.email,
-                product,
-                oldPrice,
-                newPrice
-              );
+          if (userError) {
+             results.debug = "Error fetching user: " + userError.message;
+          } else if (user?.email) {
+            const emailResult = await sendPriceChangeAlert(
+              user.email,
+              product,
+              oldPrice,
+              newPrice
+            );
 
-              if (emailResult.success) {
-                results.alertsSent++;
-              }
+            if (emailResult.success) {
+              results.alertsSent++;
+            } else {
+              results.debug = "Email block: " + JSON.stringify(emailResult.error);
             }
+          } else {
+             results.debug = "User email not found for ID: " + product.user_id;
           }
         }
 
@@ -90,6 +95,7 @@ export async function POST(request) {
       } catch (error) {
         console.error(`Error processing product ${product.id}:`, error);
         results.failed++;
+        results.debugError = error.message;
       }
     }
 

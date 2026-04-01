@@ -1,5 +1,3 @@
-// https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs?queryGroups=language&language=js#nextjs-middleware
-
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 
@@ -18,17 +16,17 @@ export async function updateSession(request) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) =>
-            request.cookies.set(name, value)
+            request.cookies.set(name, value),
           );
           supabaseResponse = NextResponse.next({
             request,
           });
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, options),
           );
         },
       },
-    }
+    },
   );
 
   // refreshing the auth token
