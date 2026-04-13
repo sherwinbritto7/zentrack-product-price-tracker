@@ -22,7 +22,7 @@ export default function PriceChart({ productId }) {
       const history = await getPriceHistory(productId);
 
       const chartData = history.map((item) => ({
-        date: new Date(item.checked_at).toLocaleDateString(),
+        date: new Date(item.created_at || item.checked_at).toLocaleDateString(),
         price: parseFloat(item.price),
       }));
 
@@ -44,8 +44,8 @@ export default function PriceChart({ productId }) {
 
   if (data.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500 w-full">
-        No price history yet. Check back after the first daily update!
+      <div className="text-center py-8 text-gray-500 w-full bg-gray-50 rounded-lg border border-dashed">
+        Starting to track price history. Check back soon for updates!
       </div>
     );
   }
