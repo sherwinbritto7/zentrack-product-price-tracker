@@ -64,8 +64,8 @@ export default function PriceChart({ productId, initialPrice, initialDate }) {
   }
 
   const latestPrice = data[data.length - 1].price;
-  const initialPrice = data[0].price;
-  const isPriceDown = latestPrice < initialPrice;
+  const firstPrice = data[0].price;
+  const isPriceDown = latestPrice < firstPrice;
 
   return (
     <div className="w-full pt-4">
@@ -126,7 +126,7 @@ export default function PriceChart({ productId, initialPrice, initialDate }) {
             
             {/* Base line for initial price */}
             <ReferenceLine 
-              y={initialPrice} 
+              y={firstPrice} 
               stroke="#cbd5e1" 
               label={{ position: 'left', value: 'Start', fill: '#94a3b8', fontSize: 10 }} 
               strokeDasharray="3 3" 
