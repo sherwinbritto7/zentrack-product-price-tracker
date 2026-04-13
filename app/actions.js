@@ -66,10 +66,15 @@ export async function addProduct(formData) {
 
     if (error) throw error;
 
-    // Add to price history if it's a brand new product OR price changed
-    // Use parseFloat to ensure we're comparing numbers correctly
+    // Check if we already have any history for this product
+    const { count } = await supabase
+      .from("price_history")
+      .select("*", { count: "exact", head: true })
+      .eq("product_id", product.id);
+
+    // Add to price history if it's a brand new product OR price changed OR no history exists yet
     const oldPrice = isUpdate ? parseFloat(existingProduct.current_price) : null;
-    const shouldAddHistory = !isUpdate || oldPrice !== newPrice;
+    const shouldAddHistory = !isUpdate || oldPrice !== newPrice || count === 0;
 
     if (shouldAddHistory) {
       await supabase.from("price_history").insert({
