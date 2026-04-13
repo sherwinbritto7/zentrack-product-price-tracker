@@ -142,7 +142,11 @@ export default function ProductCard({ product }) {
 
       {showChart && (
         <CardFooter className="pt-0">
-          <PriceChart productId={product.id} />
+          <PriceChart 
+            productId={product.id} 
+            initialPrice={product.current_price}
+            initialDate={product.created_at}
+          />
         </CardFooter>
       )}
     </Card>

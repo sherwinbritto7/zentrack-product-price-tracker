@@ -14,7 +14,7 @@ import {
 import { getPriceHistory } from "@/app/actions";
 import { Loader2 } from "lucide-react";
 
-export default function PriceChart({ productId }) {
+export default function PriceChart({ productId, initialPrice, initialDate }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,21 +22,28 @@ export default function PriceChart({ productId }) {
     async function loadData() {
       const history = await getPriceHistory(productId);
 
-      const chartData = history.map((item) => ({
-        date: new Date(item.created_at || item.checked_at).toLocaleDateString(undefined, {
-           month: 'short',
-           day: 'numeric'
-        }),
-        fullDate: new Date(item.created_at || item.checked_at).toLocaleString(),
-        price: parseFloat(item.price),
-      }));
-
-      setData(chartData);
+      if (history.length === 0 && initialPrice) {
+        setData([{
+          date: new Date(initialDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+          fullDate: new Date(initialDate).toLocaleString(),
+          price: parseFloat(initialPrice),
+        }]);
+      } else {
+        const chartData = history.map((item) => ({
+          date: new Date(item.created_at || item.checked_at).toLocaleDateString(undefined, {
+             month: 'short',
+             day: 'numeric'
+          }),
+          fullDate: new Date(item.created_at || item.checked_at).toLocaleString(),
+          price: parseFloat(item.price),
+        }));
+        setData(chartData);
+      }
       setLoading(false);
     }
 
     loadData();
-  }, [productId]);
+  }, [productId, initialPrice, initialDate]);
 
   if (loading) {
     return (
