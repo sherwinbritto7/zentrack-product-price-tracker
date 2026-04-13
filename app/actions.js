@@ -134,13 +134,32 @@ export async function getProducts() {
 export async function getPriceHistory(productId) {
   try {
     const supabase = await createClient();
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from("price_history")
       .select("*")
       .eq("product_id", productId)
       .order("created_at", { ascending: true });
 
     if (error) throw error;
+
+    // If no history exists, provide the current price as the starting point
+    if (!data || data.length === 0) {
+      const { data: product } = await supabase
+        .from("products")
+        .select("current_price, currency, created_at")
+        .eq("id", productId)
+        .single();
+
+      if (product) {
+        return [{
+          product_id: productId,
+          price: product.current_price,
+          currency: product.currency,
+          created_at: product.created_at
+        }];
+      }
+    }
+
     return data || [];
   } catch (error) {
     console.error("Get price history error:", error);
