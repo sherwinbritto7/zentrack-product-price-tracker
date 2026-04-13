@@ -94,8 +94,12 @@ export default function PriceChart({ productId }) {
               dy={10}
             />
             <YAxis 
-              hide={true}
+              tick={{ fontSize: 10, fill: '#64748b' }}
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={(value) => `₹${value.toLocaleString()}`}
               domain={['auto', 'auto']}
+              dx={-10}
             />
             <Tooltip
               content={({ active, payload }) => {
@@ -117,19 +121,33 @@ export default function PriceChart({ productId }) {
             <ReferenceLine 
               y={initialPrice} 
               stroke="#cbd5e1" 
-              label={{ position: 'right', value: 'Initial', fill: '#94a3b8', fontSize: 10 }} 
+              label={{ position: 'left', value: 'Start', fill: '#94a3b8', fontSize: 10 }} 
               strokeDasharray="3 3" 
+            />
+
+            {/* Current Price indicator */}
+            <ReferenceLine 
+              y={latestPrice} 
+              stroke={isPriceDown ? '#10b981' : '#6366f1'} 
+              strokeDasharray="3 3"
+              label={{ 
+                position: 'right', 
+                value: `Now: ₹${latestPrice.toLocaleString()}`, 
+                fill: isPriceDown ? '#10b981' : '#6366f1', 
+                fontSize: 10,
+                fontWeight: 'bold'
+              }} 
             />
 
             <Area
               type="monotone"
               dataKey="price"
-              stroke="#10b981"
+              stroke={isPriceDown ? '#10b981' : '#6366f1'}
               strokeWidth={3}
               fillOpacity={1}
               fill="url(#colorPrice)"
               animationDuration={1500}
-              dot={{ fill: "#10b981", r: 4, strokeWidth: 2, stroke: "#fff" }}
+              dot={{ fill: isPriceDown ? '#10b981' : '#6366f1', r: 4, strokeWidth: 2, stroke: "#fff" }}
               activeDot={{ r: 6, strokeWidth: 0 }}
             />
           </AreaChart>
