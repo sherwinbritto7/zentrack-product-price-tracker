@@ -1,20 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { signOut } from "@/app/actions";
 import AuthModal from "./AuthModal";
 import { Button } from "@/components/ui/button";
-import { LogIn, LogOut } from "lucide-react";
+import { LogIn, LogOut, Loader2 } from "lucide-react";
 
 export default function AuthButton({ user }) {
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  const handleSignOut = (e) => {
+    e.preventDefault();
+    startTransition(async () => {
+      await signOut();
+    });
+  };
 
   if (user) {
     return (
-      <form action={signOut}>
-        <Button variant="ghost" size="sm" type="submit" className="gap-2">
-          <LogOut className="w-4 h-4" />
-          Sign Out
+      <form onSubmit={handleSignOut}>
+        <Button variant="ghost" size="sm" type="submit" className="gap-2" disabled={isPending}>
+          {isPending ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <LogOut className="w-4 h-4" />
+          )}
+          {isPending ? "Signing Out..." : "Sign Out"}
         </Button>
       </form>
     );
