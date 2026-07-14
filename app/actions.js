@@ -138,7 +138,7 @@ export async function getPriceHistory(productId) {
       .from("price_history")
       .select("*")
       .eq("product_id", productId)
-      .order("created_at", { ascending: true });
+      .order("checked_at", { ascending: true });
 
     if (error) throw error;
 

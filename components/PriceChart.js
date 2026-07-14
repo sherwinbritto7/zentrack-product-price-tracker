@@ -22,14 +22,15 @@ export default function PriceChart({ productId, initialPrice, initialDate }) {
     async function loadData() {
       const history = await getPriceHistory(productId);
 
+      let chartData = [];
       if (history.length === 0 && initialPrice) {
-        setData([{
+        chartData = [{
           date: new Date(initialDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
           fullDate: new Date(initialDate).toLocaleString(),
           price: parseFloat(initialPrice),
-        }]);
+        }];
       } else {
-        const chartData = history.map((item) => ({
+        chartData = history.map((item) => ({
           date: new Date(item.created_at || item.checked_at).toLocaleDateString(undefined, {
              month: 'short',
              day: 'numeric'
@@ -37,8 +38,19 @@ export default function PriceChart({ productId, initialPrice, initialDate }) {
           fullDate: new Date(item.created_at || item.checked_at).toLocaleString(),
           price: parseFloat(item.price),
         }));
-        setData(chartData);
       }
+
+      // If we only have 1 data point, append a second point representing current time to draw a horizontal line
+      if (chartData.length === 1) {
+        const now = new Date();
+        chartData.push({
+          date: now.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+          fullDate: now.toLocaleString(),
+          price: chartData[0].price,
+        });
+      }
+
+      setData(chartData);
       setLoading(false);
     }
 
@@ -125,12 +137,14 @@ export default function PriceChart({ productId, initialPrice, initialDate }) {
             />
             
             {/* Base line for initial price */}
-            <ReferenceLine 
-              y={firstPrice} 
-              stroke="#cbd5e1" 
-              label={{ position: 'left', value: 'Start', fill: '#94a3b8', fontSize: 10 }} 
-              strokeDasharray="3 3" 
-            />
+            {firstPrice !== latestPrice && (
+              <ReferenceLine 
+                y={firstPrice} 
+                stroke="#cbd5e1" 
+                label={{ position: 'left', value: 'Start', fill: '#94a3b8', fontSize: 10 }} 
+                strokeDasharray="3 3" 
+              />
+            )}
 
             {/* Current Price indicator */}
             <ReferenceLine 
